@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <header>
+      <h1>85% Attendance Tracker</h1>
+      <p class="subtitle">Keep your bunks in check</p>
+    </header>
+
+    <!-- Setup / Update Form -->
+    <section class="card">
+      <h2>Your Details</h2>
+      <form id="attendance-form">
+        <div class="input-group">
+          <label for="total-classes">Total Classes Held:</label>
+          <input type="number" id="total-classes" min="0" required placeholder="e.g. 50">
+        </div>
+        <div class="input-group">
+          <label for="attended-classes">Classes Attended:</label>
+          <input type="number" id="attended-classes" min="0" required placeholder="e.g. 45">
+        </div>
+        <button type="submit" id="save-btn">Save / Update Stats</button>
+      </form>
+    </section>
+
+    <!-- Dashboard Status -->
+    <section class="card status-card">
+      <h2>Current Status</h2>
+      <div class="percentage-display" id="percentage">0%</div>
+      <p id="status-message">Enter your data above to start tracking.</p>
+    </section>
+
+    <!-- Daily Log Section -->
+    <section class="card daily-card">
+      <h2>Daily Check-in</h2>
+      <p>Did you attend your classes today?</p>
+      <div class="action-buttons">
+        <button id="btn-present" class="btn-success">Present Today (+1)</button>
+        <button id="btn-bunked" class="btn-danger">Bunked Today (+0)</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
