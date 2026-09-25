@@ -12,6 +12,10 @@
    WE WILL REPLACE THESE VALUES DURING DEPLOYMENT.
 */
 
+/* =====================================================
+   FIREBASE
+   ===================================================== */
+
 import { initializeApp }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
@@ -25,6 +29,19 @@ import {
 }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    onAuthStateChanged,
+    signOut
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+/* =====================================================
+   FIREBASE CONFIG
+   ===================================================== */
 
 const firebaseConfig = {
     apiKey: "AIzaSyDFchsHZlTHqEu_TZTb79erckRKEsmNqIc",
@@ -40,6 +57,10 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
+const auth = getAuth(app);
+
+const provider = new GoogleAuthProvider();
+
 
 /* =====================================================
    USER ID
@@ -51,7 +72,7 @@ const db = getFirestore(app);
    Later we can add proper Firebase login.
 */
 
-const USER_ID = "saru";
+let USER_ID = null;
 
 
 /* =====================================================
@@ -790,4 +811,114 @@ async function initializeDashboard() {
 }
 
 
-initializeDashboard();
+/* =====================================================
+   GOOGLE LOGIN
+   ===================================================== */
+
+const loginScreen =
+    document.getElementById("loginScreen");
+
+const appScreen =
+    document.getElementById("app");
+
+const googleLoginBtn =
+    document.getElementById("googleLoginBtn");
+
+const loginError =
+    document.getElementById("loginError");
+
+
+/* ================= LOGIN ================= */
+
+googleLoginBtn.addEventListener("click", async () => {
+
+    try {
+
+        loginError.textContent = "";
+
+        await signInWithPopup(
+            auth,
+            provider
+        );
+
+    } catch (error) {
+
+        console.error(error);
+
+        loginError.textContent =
+            "Login failed. Please try again.";
+
+    }
+
+});
+
+
+/* ================= AUTH STATE ================= */
+
+onAuthStateChanged(auth, async (user) => {
+
+    if (user) {
+
+        console.log("Logged in:", user.email);
+
+        /*
+           Use the Google account's unique UID
+           as the Firestore user ID.
+        */
+
+        USER_ID = user.uid;
+
+
+        /* Show dashboard */
+
+        loginScreen.style.display = "none";
+
+        appScreen.style.display = "flex";
+
+
+        /* Update profile */
+
+        const profileName =
+            document.querySelector(".profile span");
+
+        if (profileName) {
+
+            profileName.textContent =
+                user.displayName || "Student";
+
+        }
+
+
+        /* Update avatar */
+
+        const avatar =
+            document.querySelector(".avatar");
+
+        if (avatar) {
+
+            avatar.textContent =
+                (user.displayName || "S")
+                .charAt(0)
+                .toUpperCase();
+
+        }
+
+
+        /* Load dashboard */
+
+        initializeDashboard();
+
+
+    } else {
+
+        console.log("No user logged in.");
+
+        USER_ID = null;
+
+        loginScreen.style.display = "flex";
+
+        appScreen.style.display = "none";
+
+    }
+
+});
