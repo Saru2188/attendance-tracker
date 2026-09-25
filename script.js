@@ -827,6 +827,9 @@ const googleLoginBtn =
 const loginError =
     document.getElementById("loginError");
 
+const logoutBtn =
+    document.getElementById("logoutBtn");
+
 
 /* ================= LOGIN ================= */
 
@@ -879,15 +882,16 @@ onAuthStateChanged(auth, async (user) => {
         /* Update profile */
 
         const profileName =
-            document.querySelector(".profile span");
+    document.getElementById("profileName");
 
-        if (profileName) {
+if (profileName) {
 
-            profileName.textContent =
-                user.displayName || "Student";
+    profileName.textContent =
+        user.displayName || "Student";
 
-        }
+}
 
+   
 
         /* Update avatar */
 
@@ -918,6 +922,23 @@ onAuthStateChanged(auth, async (user) => {
         loginScreen.style.display = "flex";
 
         appScreen.style.display = "none";
+
+    }
+
+});
+/* =====================================================
+   LOGOUT
+   ===================================================== */
+
+logoutBtn.addEventListener("click", async () => {
+
+    try {
+
+        await signOut(auth);
+
+    } catch (error) {
+
+        console.error("Logout failed:", error);
 
     }
 
