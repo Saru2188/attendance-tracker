@@ -526,3 +526,33 @@ th {
 
     display: none;
 }
+/* =====================================================
+   LOGOUT BUTTON
+   ===================================================== */
+
+.logout-btn {
+
+    margin-left: 12px;
+
+    padding: 8px 12px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 8px;
+
+    background: white;
+
+    color: #333;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.logout-btn:hover {
+
+    background: #f3f4f6;
+
+}
