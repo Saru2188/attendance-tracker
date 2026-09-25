@@ -1,50 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Attendance Tracker</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase -->
+    <script type="module" src="script.js"></script>
 </head>
+
 <body>
 
-  <div class="app-container">
-    <header>
-      <h1>85% Attendance Tracker</h1>
-      <p class="subtitle">Multi-Course Management</p>
-    </header>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
 
-    <!-- Add New Course Section -->
-    <section class="card">
-      <h2>Add New Course</h2>
-      <form id="add-course-form">
-        <div class="input-group">
-          <label for="course-name">Course Name:</label>
-          <input type="text" id="course-name" placeholder="e.g. Mathematics, Physics" required>
+        <div class="logo">
+            🎓 <span>StudentOS</span>
         </div>
-        <div class="input-group flex-row">
-          <div>
-            <label for="initial-total">Total Held:</label>
-            <input type="number" id="initial-total" min="0" placeholder="0" value="0" required>
-          </div>
-          <div>
-            <label for="initial-attended">Attended:</label>
-            <input type="number" id="initial-attended" min="0" placeholder="0" value="0" required>
-          </div>
+
+        <nav>
+            <button class="nav-btn active" onclick="showPage('dashboard')">
+                🏠 Dashboard
+            </button>
+
+            <button class="nav-btn" onclick="showPage('timetable')">
+                🗓️ Timetable
+            </button>
+
+            <button class="nav-btn" onclick="showPage('tasks')">
+                ✅ Tasks
+            </button>
+
+            <button class="nav-btn" onclick="showPage('attendance')">
+                📊 Attendance
+            </button>
+
+            <button class="nav-btn" onclick="showPage('exams')">
+                📝 Exams
+            </button>
+
+            <button class="nav-btn" onclick="showPage('notes')">
+                📒 Notes
+            </button>
+
+            <button class="nav-btn" onclick="showPage('expenses')">
+                💰 Expenses
+            </button>
+        </nav>
+
+        <div class="sync-status">
+            ☁️ <span id="syncStatus">Connecting...</span>
         </div>
-        <button type="submit" class="btn-primary">Add Course</button>
-      </form>
-    </section>
 
-    <!-- Course List Section -->
-    <section class="card">
-      <h2>Your Courses</h2>
-      <div id="course-list" class="course-list">
-        <!-- Dynamic course cards injected via JS -->
-      </div>
-    </section>
-  </div>
+    </aside>
 
-  <script src="script.js"></script>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <!-- TOP BAR -->
+        <header class="topbar">
+
+            <div>
+                <h1 id="pageTitle">Dashboard</h1>
+                <p id="currentDate"></p>
+            </div>
+
+            <div class="profile">
+                <div class="avatar">S</div>
+                <span>Saru</span>
+            </div>
+
+        </header>
+
+
+        <!-- ================= DASHBOARD ================= -->
+
+        <section id="dashboard" class="page active-page">
+
+            <div class="welcome">
+                <h2>Good evening, Saru 👋</h2>
+                <p>Here's what's happening today.</p>
+            </div>
+
+
+            <div class="stats">
+
+                <div class="stat-card">
+                    <span>📚</span>
+                    <h3 id="todayClasses">0</h3>
+                    <p>Classes Today</p>
+                </div>
+
+                <div class="stat-card">
+                    <span>📊</span>
+                    <h3 id="overallAttendance">0%</h3>
+                    <p>Overall Attendance</p>
+                </div>
+
+                <div class="stat-card">
+                    <span>✅</span>
+                    <h3 id="pendingTasks">0</h3>
+                    <p>Pending Tasks</p>
+                </div>
+
+                <div class="stat-card">
+                    <span>📝</span>
+                    <h3 id="upcomingExams">0</h3>
+                    <p>Upcoming Exams</p>
+                </div>
+
+            </div>
+
+
+            <div class="grid-2">
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h2>Today's Classes</h2>
+                    </div>
+
+                    <div id="todaySchedule">
+                        <p class="empty">No classes added.</p>
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h2>Upcoming Tasks</h2>
+                    </div>
+
+                    <div id="dashboardTasks">
+                        <p class="empty">No pending tasks.</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= TIMETABLE ================= -->
+
+        <section id="timetable" class="page">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Timetable</h2>
+                    <p>Your weekly class schedule.</p>
+                </div>
+
+                <button class="primary-btn" onclick="addClass()">
+                    + Add Class
+                </button>
+            </div>
+
+            <div class="card">
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Time</th>
+                                <th>Subject</th>
+                                <th>Room</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="timetableBody"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= TASKS ================= -->
+
+        <section id="tasks" class="page">
+
+            <div class="section-heading">
+
+                <div>
+                    <h2>Tasks</h2>
+                    <p>Assignments, labs and deadlines.</p>
+                </div>
+
+                <button class="primary-btn" onclick="addTask()">
+                    + Add Task
+                </button>
+
+            </div>
+
+            <div id="taskList" class="list"></div>
+
+        </section>
+
+
+        <!-- ================= ATTENDANCE ================= -->
+
+        <section id="attendance" class="page">
+
+            <div class="section-heading">
+
+                <div>
+                    <h2>Attendance</h2>
+                    <p>Keep track of your attendance.</p>
+                </div>
+
+                <button class="primary-btn" onclick="addAttendance()">
+                    + Add Subject
+                </button>
+
+            </div>
+
+            <div id="attendanceList" class="attendance-grid"></div>
+
+        </section>
+
+
+        <!-- ================= EXAMS ================= -->
+
+        <section id="exams" class="page">
+
+            <div class="section-heading">
+
+                <div>
+                    <h2>Exams</h2>
+                    <p>Upcoming examinations.</p>
+                </div>
+
+                <button class="primary-btn" onclick="addExam()">
+                    + Add Exam
+                </button>
+
+            </div>
+
+            <div id="examList" class="list"></div>
+
+        </section>
+
+
+        <!-- ================= NOTES ================= -->
+
+        <section id="notes" class="page">
+
+            <div class="section-heading">
+
+                <div>
+                    <h2>Quick Notes</h2>
+                    <p>Store important information.</p>
+                </div>
+
+                <button class="primary-btn" onclick="addNote()">
+                    + Add Note
+                </button>
+
+            </div>
+
+            <div id="notesList" class="notes-grid"></div>
+
+        </section>
+
+
+        <!-- ================= EXPENSES ================= -->
+
+        <section id="expenses" class="page">
+
+            <div class="section-heading">
+
+                <div>
+                    <h2>Expenses</h2>
+                    <p>Track your spending.</p>
+                </div>
+
+                <button class="primary-btn" onclick="addExpense()">
+                    + Add Expense
+                </button>
+
+            </div>
+
+            <div class="card expense-total">
+
+                <span>Total Expenses</span>
+
+                <strong id="totalExpenses">
+                    ₹0
+                </strong>
+
+            </div>
+
+            <div id="expenseList" class="list"></div>
+
+        </section>
+
+    </main>
+
 </body>
 </html>
